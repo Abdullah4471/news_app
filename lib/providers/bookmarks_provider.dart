@@ -20,7 +20,7 @@ class BookmarksProvider with ChangeNotifier {
 
   Future<List<BookmarksModel>> fetchBookmarks() async {
     bookmarkList = await NewsAPiServices.getBookmarks() ?? [];
-    // notifyListeners();
+    notifyListeners();
     return bookmarkList;
   }
 
@@ -38,10 +38,10 @@ class BookmarksProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteBookmark() async {
+  Future<void> deleteBookmark({required String key}) async {
     try {
       var uri =
-      Uri.https(BASEURL_FIREBASE, "bookmarks/-N5au6MPr6UbBxbgDKN0.json");
+      Uri.https(BASEURL_FIREBASE, "bookmarks/$key.json");
       var response = await http.delete(uri);
       log('Response status: ${response.statusCode}');
       log('Response body: ${response.body}');

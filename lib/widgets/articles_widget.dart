@@ -7,16 +7,20 @@ import 'package:provider/provider.dart';
 import '../consts/styles.dart';
 import '../inner_screens/blog_details.dart';
 import '../inner_screens/news_details_webview.dart';
+import '../models/bookmarks_model.dart';
 import '../models/news_model.dart';
 import '../services/utils.dart';
 
 class ArticlesWidget extends StatelessWidget {
-  const ArticlesWidget({Key? key}) : super(key: key);
+  const ArticlesWidget({Key? key, this.isBookmark = false}) : super(key: key);
   // final String imageUrl, title, url, dateToShow, readingTime;
+  final bool isBookmark;
   @override
   Widget build(BuildContext context) {
     Size size = Utils(context).getScreenSize;
-    final newsModelProvider = Provider.of<NewsModel>(context);
+    dynamic newsModelProvider = isBookmark
+        ? Provider.of<BookmarksModel>(context)
+        : Provider.of<NewsModel>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -24,7 +28,8 @@ class ArticlesWidget extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             // Navigate to the in app details screen
-            Navigator.pushNamed(context, NewsDetailsScreen.routeName, arguments: newsModelProvider.publishedAt);
+            Navigator.pushNamed(context, NewsDetailsScreen.routeName,
+                arguments: newsModelProvider.publishedAt);
           },
           child: Stack(
             children: [
@@ -57,7 +62,7 @@ class ArticlesWidget extends StatelessWidget {
                           width: size.height * 0.12,
                           boxFit: BoxFit.fill,
                           errorWidget:
-                              Image.asset('assets/images/empty_image.png'),
+                          Image.asset('assets/images/empty_image.png'),
                           imageUrl: newsModelProvider.urlToImage,
                         ),
                       ),
@@ -94,14 +99,15 @@ class ArticlesWidget extends StatelessWidget {
                                       context,
                                       PageTransition(
                                           type: PageTransitionType.rightToLeft,
-                                          child: NewsDetailsWebView(url: newsModelProvider.url),
+                                          child: NewsDetailsWebView(
+                                              url: newsModelProvider.url),
                                           inheritTheme: true,
                                           ctx: context),
                                     );
                                   },
-                                  icon:  Icon(
+                                  icon: const Icon(
                                     Icons.link,
-                                    color: Colors.yellow.shade800,
+                                    color: Colors.blue,
                                   ),
                                 ),
                                 Text(
